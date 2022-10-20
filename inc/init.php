@@ -23,4 +23,5 @@ require_once 'function.php';
 
 // Définir une constante où sera stockée l'URL RELATIVE
 define('URL', 'http://localhost/php/boutique/');
+define('RACINE', $_SERVER[DOCUMENT_ROOT].'/php/boutique/');
 ?>

@@ -17,7 +17,4 @@ function userIsAdmin() {
     }
 }
 
-
-
-
 ?>
