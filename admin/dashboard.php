@@ -14,7 +14,7 @@ if(!userIsAdmin()){
         <div class="col-10 text-center">
             <ul class="list-group">
                 <li class="list-group-item m-2 border">
-                    <a href="">Gestion membres</a>
+                    <a href="membres.php">Gestion membres</a>
                 </li>
                 <li class="list-group-item m-2 border">
                     <a href="">Gestion profils</a>

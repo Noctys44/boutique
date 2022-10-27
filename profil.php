@@ -20,21 +20,6 @@ if(userIsAdmin())
 };
 
 
-// if(isset($_SESSION['membre']))
-// {
-//     // echo 'Bonjour';
-
-//     // "<div>" . 'Votre pseudo : ' . ($_SESSION['membre']['pseudo']) . "</div>" . 
-//     // "<div>" . 'Votre nom : ' . ($_SESSION['membre']['nom']) . "</div>" .
-//     // "<div>" . 'Votre prénom : ' . ($_SESSION['membre']['prenom']) . "</div>" .
-//     // "<div>" . 'Votre email : ' . ($_SESSION['membre']['email']) . "</div>" .
-//     // "<div>" . 'Votre civilité : ' . ($_SESSION['membre']['civilite']) . "</div>" .
-//     // "<div>" . 'Votre ville : ' . ($_SESSION['membre']['ville']) . "</div>" .
-//     // "<div>" . 'Votre code postal : ' . ($_SESSION['membre']['code_postal']) . "</div>" .
-//     // "<div>" . 'Votre adresse : ' . ($_SESSION['membre']['adresse']) . "</div>" .
-//     // "<div>" . 'Votre statut : ' . ($_SESSION['membre']['statut']) . "</div>" ;
-// }
-
 $req = $pdo->query('SELECT * FROM membre WHERE pseudo = "$pseudo"');
 $user = $req->fetch(PDO::FETCH_ASSOC);
 

@@ -1,92 +1,134 @@
 <!-- PARTIE TRAITEMENT -->
 
-<?php 
+<?php require_once '../inc/header.inc.php'; 
 
-require_once '../inc/header.inc.php';
 
 if(!userIsAdmin()){
-    header('location:../index.php/');
+    header('location:../connexion.php');
     exit();
 }
 
 if($_POST)
-{
+{   
+    
     foreach($_POST as $key => $value)
     {
         $_POST[$key] = htmlspecialchars(addslashes($value));
     }
-    if(!empty($_POST['photo']))
+    if(!empty($_FILES['photo']))
     {
-        $nom_img = time() . '_' . $_POST['reference'] . '_' . $_POST['photo']['name'];
+        $nom_img = time() . '' . $_POST['reference'] . '' . $_FILES['photo']['name'];
+        
         $img_doc = RACINE . "photo/$nom_img";
         $img_bdd = URL . "photo/$nom_img";
 
         if($_FILES['photo']['size'] <= 8000000)
         {
-            $data = pathinfo($_FILES['photo']['name']);
-            $img_ext = $data['extension'];
+            $data = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+            
+
             $tab = ['jpg', 'png', 'jpeg', 'gif', 'JPG', 'PNG', 'JPEG', 'GIF', 'Jpg', 'Png', 'Jpeg', 'Gif'];
-            if(in_array($tab, $img_ext))
+
+            if(in_array($data, $tab))
             {
-                move_uploaded_file($_FILES['photo']['tmp_name'], $img_doc)
+                move_uploaded_file($_FILES['photo']['tmp_name'], $img_doc);
             } else {
                 $content .='<div class="alert alert-danger" role="alert">
                 Format non autorisé 
                 </div>';
-           } 
+            } 
         } else {
             $content .='<div class="alert alert-danger" role="alert">
             Vérifier la taille de votre image
             </div>';
         }
+        $rep= $pdo->query("INSERT INTO produit (reference, categorie, titre, description, couleur, taille, public, photo, prix, stock) VALUES ('$_POST[reference]', '$_POST[categorie]', '$_POST[titre]', '$_POST[description]', '$_POST[couleur]', '$_POST[taille]', '$_POST[public]', '$img_bdd', '$_POST[prix]', '$_POST[stock]')");
+
+    }
+    
+    $rep= $pdo->query("INSERT INTO produit (reference, categorie, titre, description, couleur, taille, public, photo, prix, stock) VALUES ('$_POST[reference]', '$_POST[categorie]', '$_POST[titre]', '$_POST[description]', '$_POST[couleur]', '$_POST[taille]', '$_POST[public]', '$img_bdd', '$_POST[prix]', '$_POST[stock]')");
 }
 
 
 
-if($_POST){
-    if(empty($_POST['photo'])){
-        $defaultImage = URL . './img/default.jpg';
-        $pdo->query("INSERT INTO produit(reference, categorie, titre, description, couleur, taille, public, photo, prix,stock) VALUES('$_POST[reference]','$_POST[categorie]','$_POST[titre]','$_POST[description]','$_POST[couleur]','$_POST[taille]','$_POST[public]','$defaultImage','$_POST[prix]','$_POST[stock]')");
-    } else {
-        $updateImage = URL . $_POST['photo'];
-        $pdo->query("INSERT INTO produit(reference, categorie, titre, description, couleur, taille, public, photo, prix,stock) VALUES('$_POST[reference]','$_POST[categorie]','$_POST[titre]','$_POST[description]','$_POST[couleur]','$_POST[taille]','$_POST[public]','$updateImage','$_POST[prix]','$_POST[stock]')");
-
-    //     if (!empty($_FILES['photo'])) 
-    // {
-    //     $nomImg = time() . '_' . rand() . '_' . $_FILES['photo']['name'];
-    //     $img_bdd = URL . "img/$nomImg"; 
-    //     define("BASE",$_SERVER['DOCUMENT_ROOT'] . '/php/img/'); 
-    //     $img_doc = BASE ."img/$nomImg"; 
-    
-    //     if($_FILES['photo']['size'] <= 8000000)
-    //     {
-    //         $info = pathinfo($_FILES['photo']['name']);
-    //         $ext = $info['extension']; 
-    //         $tabExt = ['jpg', 'png', 'jpeg', 'gif', 'JPG', 'PNG', 'JPEG', 'GIF', 'Jpg', 'Png', 'Jpeg', 'Gif'];
-    
-    //         if(in_array($ext, $tabExt))
-    //         {
-    //             copy($_FILES['photo']['tmp_name'],$img_doc);
-    //             $pdo->query("INSERT INTO produit(photo) VALUES('$img_bdd')");
-    //         } else {
-    //             echo "Format non autorisé";
-    //         }
-    
-    //     } else {
-    //         echo "Vérifier la taille de votre image";
-    //     }
-    
-    // }
-    // }
-
-
-    $content .='<div class="alert alert-success" role="alert">
-    Le produit a bien été enregistré :)
+if(isset($_GET['action']) && $_GET['action'] == 'suppression')
+{
+    $pdo->query("DELETE FROM produit WHERE id_produit = '$_GET[id_produit]'");
+    header ('location:produit.php');
+    $content .= '<div class="alert alert-success" role="alert">
+    Le produit a bien été supprimé
     </div>';
-};
+}
+
+
+$res = $pdo->query("SELECT * FROM produit");
+echo '<h1 class="text-center">' . 'Vous avez ' . $res->rowCount() . ' produits en ligne' . '</h1>';
+echo '<div class="container">';
+echo '<div class="row justify-content-center">';
+echo '<div class="col-10">';
+echo "<table  border=\'2\'><tr>";
+
+for($i = 0; $i < $res->columnCount(); $i++)
+{
+    $colonne = $res->getColumnMeta($i);
+    echo '<th class="text-center">'.$colonne['name'].'</th>';
+}
+
+echo "<th>Update</th>";
+echo "<th>Delete</th>";
+echo '</tr>';
+
+while($ligne = $res->fetch(PDO::FETCH_ASSOC))
+{
+    echo '<tr>';
+        foreach($ligne as $key=>$info) {
+            if($key == 'photo')
+            {
+                echo "<td><img src='$info' width='100px'></td>";
+            } else {
+                echo "<td>$info</td>";
+            }
+        }
+    echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'].'">Update<i class="fas fa-edit"></i></a></td>';
+    echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'].'">Delete<i class="fas fa-trash-alt"></i></a></td>';
+
+}
+
+echo '</table>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
+
+// s'il y a une action dans l'url et que cette action = modification alors je fais une requête pour modifierr le produit
+
+if (isset($_GET['action']) && $_GET['action'] == 'modification') {
+
+    $res = $pdo->query("SELECT *
+                    FROM produit 
+                    WHERE id_produit = '$_GET[id_produit]'");
+
+    $produit_actuel = $res->fetch(PDO::FETCH_ASSOC);
+}
+
+// Utiliser les conditions ternaire pour pré-remplir les champs 
+
+// si l'id produit_actuel existe alors alors je le récupère sinon je mets rien dans la
+$id_produit = (isset($produit_actuel['id_produit'])) ? $produit_actuel['id_produit'] : '';
+$reference = (isset($produit_actuel['reference'])) ? $produit_actuel['reference'] : '';
+$categorie = (isset($produit_actuel['categorie'])) ? $produit_actuel['categorie'] : '';
+$titre = (isset($produit_actuel['titre'])) ? $produit_actuel['titre'] : '';
+$description = (isset($produit_actuel['description'])) ? $produit_actuel['description'] : '';
+$couleur = (isset($produit_actuel['couleur'])) ? $produit_actuel['couleur'] : '';
+$taille = (isset($produit_actuel['taille'])) ? $produit_actuel['taille'] : '';
+$public = (isset($produit_actuel['public'])) ? $produit_actuel['public'] : '';
+$photo = (isset($produit_actuel['photo'])) ? $produit_actuel['photo'] : '';
+$prix = (isset($produit_actuel['prix'])) ? $produit_actuel['prix'] : '';
+$stock = (isset($produit_actuel['stock'])) ? $produit_actuel['stock'] : '';
 
 
 ?>
+
+
 
 
 
