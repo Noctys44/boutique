@@ -17,6 +17,7 @@ function userIsAdmin() {
     }
 }
 
+
 function creation_panier() {
     if(!isset($_SESSION['panier'])){  // S'il n'y a pas de session alors je crée ma session qui va contenir l'id, la quantite et le prix
         $_SESSION['panier'] = array();

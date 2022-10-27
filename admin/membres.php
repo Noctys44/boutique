@@ -28,7 +28,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'suppression')
 //                             INNER JOIN commande c
 //                             ON m.id_membre = c.id_commande");
                             
-$reqCommande = $pdo->query("SELECT count(c.id_commande)                     
+$reqCommande = $pdo->query("SELECT COUNT(c.id_commande)                    
                             FROM commande c
                             INNER JOIN membre m
                             ON m.id_membre = c.id_commande");
@@ -78,7 +78,7 @@ while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 
         foreach($rCommande as $key => $value){
 
-        $content .= "<td class=\"align-middle\">$value</td>";
+        $content .= "<td class=\"align-middle text-center\">$value</td>";
         }
     }
 

@@ -3,7 +3,6 @@ require_once './inc/header.inc.php';
 
 
 if(isset($_POST['ajout_panier'])){
-    echo $_POST['id_produit'];
     $req = $pdo->query("SELECT * FROM produit WHERE id_produit = '$_POST[id_produit]'"); 
     $produit = $req->fetch(PDO::FETCH_ASSOC);
     // var_dump($produit);
