@@ -138,7 +138,7 @@ $stock = (isset($produit_actuel['stock'])) ? $produit_actuel['stock'] : '';
 <h1 class="text-center">Ajout de produits</h1>
 
 <?php if (isset($_GET['action']) && $_GET['action'] == 'modification') : ?>
-    <h4 class="text-center display-4  text-warning">Modification un produit</h4>
+    <h4 class="text-center display-4  text-warning">Modification d'un produit</h4>
 <?php else : ?>
     <h4 class="text-center display-4">Ajouter un produit</h4>
 <?php endif ?>
