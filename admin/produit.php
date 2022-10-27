@@ -137,64 +137,97 @@ $stock = (isset($produit_actuel['stock'])) ? $produit_actuel['stock'] : '';
 
 <h1 class="text-center">Ajout de produits</h1>
 
-<form action="" method="POST" enctype="multipart/form-data"> 
-    <div class="container">
-        <?= $content;  ?>
-        <label for="reference" class="form-label">Référence</label>
-        <input type="text" class="form-control" name="reference" id="reference">
-
-        <label for="categorie" class="form-label">Categorie</label>
-        <input type="text" class="form-control" name="categorie" id="categorie">
-
-        <label for="titre" class="form-label">Titre</label>
-        <input type="text" class="form-control" name="titre" id="titre">
-
-        <label for="description" class="form-label">Description</label>
-        <input type="text" class="form-control" name="description" id="description">
-
-        <label for="couleur" class="form-label">Couleur</label>
-        <select class="form-select" name="couleur">
-            <option>Noir</option>
-            <option>Blanc</option>
-            <option>Bleu</option>
-            <option>Rouge</option>
-            <option>Vert</option>
-            <option>Jaune</option>
-            <option>Orange</option>
-        </select>
-
-        <label for="taille" class="form-label">Taille</label>
-        <select class="form-select" name="taille">
-            <option>XS</option>
-            <option>S</option>
-            <option>M</option>
-            <option>L</option>
-            <option>XL</option>
-            <option>XXL</option>
-            <option>Autre taille</option>
-        </select>
-
-        <label for="public">Genre</label><br>
-        <select class="form-select" name="public">
-            <option value="m">Homme</option>
-            <option value="f">Femme</option>
-            <option value="mixte">Mixte</option>
-        </select>
+<?php if (isset($_GET['action']) && $_GET['action'] == 'modification') : ?>
+    <h4 class="text-center display-4  text-warning">Modification un produit</h4>
+<?php else : ?>
+    <h4 class="text-center display-4">Ajouter un produit</h4>
+<?php endif ?>
 
 
-        <label for="photo" class="form-label">Photo</label>
-        <input type="file" class="form-control" name="photo" id="photo">
+<form method="post" action="" enctype="multipart/form-data">
+    <!--- Je récupère l'id du produit que je veux modifier dans un input hidden-------->
+    <input type="hidden" name="id_produit" value="<?= $id_produit ?>">
 
-        <label for="prix" class="form-label">Prix</label>
-        <input type="text" class="form-control" name="prix" id="prix">
+    <!----Pour tous les inputs je vais pré-remplir l'attribut value avec le resultat issu de ma condtion ternaire------->
+    <label for="reference">Reference</label>
+    <input type="text" name="reference" placeholder="reference du produit" id="reference" class="form-control" value="<?= $reference ?>"><br>
 
-        <label for="stock" class="form-label">Stock</label>
-        <input type="text" class="form-control" name="stock" id="stock">
+    <label for="categorie">Categorie</label>
+    <input type="text" name="categorie" placeholder="categorie du produit" id="categorie" class="form-control" value="<?= $categorie ?>"><br>
 
-        <input type="submit" class="btn btn-outline-primary btn-lg mt-2" value="Ajouter">
+    <label for="titre">Titre</label>
+    <input type="text" name="titre" placeholder="titre du produit" id="titre" class="form-control" value="<?= $titre ?>"><br>
+
+    <label for="description">Description</label>
+    <textarea name="description" placeholder="description du produit" id="description" class="form-control"><?= $description ?></textarea><br>
+
+    <label for="couleur">Couleur</label>
+    <select name="couleur" placeholder="couleur du produit" id="couleur" class="form-control">
+        <!------Si la couleur est == bleu echo bleu etc...---------->
+        <option <?php if ($couleur == 'Blanc') echo 'selected'; ?>>Blanc</option>
+        <option <?php if ($couleur == 'Noir') echo 'selected'; ?>>Noir</option>
+        <option <?php if ($couleur == 'Rouge') echo 'selected'; ?>>Rouge</option>
+        <option <?php if ($couleur == 'Bleu') echo 'selected'; ?>>Bleu</option>
+        <option <?php if ($couleur == 'Jaune') echo 'selected'; ?>>Jaune</option>
+        <option <?php if ($couleur == 'Multicolore') echo 'selected'; ?>>Multicolore</option>
+    </select>
+    <br>
+
+    <label for="taille">Taille</label>
+    <select name="taille" placeholder="taille du produit" id="taille" class="form-control">
+        <!------Si la taille est == XS echo bleu etc...---------->
+        <option <?php if ($taille == 'XS') echo 'selected'; ?>>XS</option>
+        <option <?php if ($taille == 'S') echo 'selected'; ?>>S</option>
+        <option <?php if ($taille == 'M') echo 'selected'; ?>>M</option>
+        <option <?php if ($taille == 'L') echo 'selected'; ?>>L</option>
+        <option <?php if ($taille == 'XL') echo 'selected'; ?>>XL</option>
+        <option <?php if ($taille == 'XXL') echo 'selected'; ?>>XXL</option>
+        <option <?php if ($taille == 'Autre taille') echo 'selected'; ?>>Autre taille</option>
+    </select>
+    <br>
+
+    <label for="public">public</label>
+    <select name="public" placeholder="public du produit" id="public" class="form-control">
+        <option value="m" <?php if ($public == 'm') echo 'selected'; ?>>Homme</option>
+        <option value="f" <?php if ($public == 'f') echo 'selected'; ?>>Femme</option>
+        <option value="Mixte" <?php if ($public == 'Mixte') echo 'selected'; ?>>Mixte</option>
+    </select>
+    <br>
+
+    <label for="photo">Photo</label>
+    
+    <input type="file" name="photo" id="photo" class="form-control" value="<?= $photo ?>">
+    <!----Si la photo n'est pas vide (le cas ou le produit a déjà une photo----->
+    <?php if (!empty($photo)) : ?>
+        <p>Vous pouvez ajouter une nouvelle photo.<br>
+            <!----afficher la photo---->
+            <img src="<?= $photo ?>" width="50">
+        </p><br>
+
+    <?php endif;     ?>
+    <input type="hidden" name="photo_actuelle" value="<?= $photo  ?>"><br>
+
+    <br>
+
+    <label for="prix">Prix</label>
+    <input type="text" name="prix" placeholder="prix du produit" id="prix" class="form-control" value="<?= $prix ?>"><br>
+
+    <label for="stock">Stock</label>
+    <input type="text" name="stock" placeholder="stock du produit" id="stock" class="form-control" value="<?= $stock ?>"><br>
+
+
+
+    <div class="text-center mb-5">
+        <?php if (isset($_GET['action']) && $_GET['action'] == 'modification') : ?>
+            <br><input type="submit" value="Valider la modification" class="btn btn-lg btn-info">
+        <?php else : ?>
+            <br><input type="submit" value="Ajouter le produit" class="btn btn-lg btn-primary">
+        <?php endif ?>
     </div>
 
+
 </form>
+
 
 <?php
 require_once '../inc/footer.inc.php';
